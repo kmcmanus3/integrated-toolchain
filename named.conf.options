@@ -1,0 +1,32 @@
+acl goodclients {
+	40.126.235.236/32;
+	104.210.116.72/32;
+	104.210.114.113/32;
+	localhost;
+	localnets;
+};
+
+options {
+	dnssec-validation	auto;
+	auth-nxdomain		no;
+	listen-on-v6		{ any; };
+	check-names		master warn;
+	notify			yes;
+	datasize		20M;
+	max-journal-size	5M;
+	max-cache-size		20M;
+	interface-interval	0;
+	listen-on		{ any; };
+	forwarders		{ 168.63.129.16; };
+	forward			first;
+	recursion		yes;
+	allow-query		{ goodclients; };
+	directory		"/var/lib/bind";
+	pid-file		"/var/run/bind/bind.pid";
+	dump-file		"data/cache_dump.db";
+	statistics-file		"data/named_stats.txt";
+	memstatistics-file	"data/named_mem_stats.txt";
+	transfer-source		* port 53;
+	notify-source		* port 53;
+	zone-statistics		yes;
+};
