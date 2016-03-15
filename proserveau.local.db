@@ -10,11 +10,9 @@ proserveau.local		IN SOA ns1.proserveau.local. root.ns1.proserveau.local. (
 						NS	ns1.proserveau.local.
 $ORIGIN proserveau.local
 $TTL 60 ; 1 minute
-ns1						A			54.153.237.235
-ansible					CNAME		ns1.proserveau.local.
-$TTL 60 ; 1 minute
-jenkins					CNAME		ns1.proserveau.local.
-docker0					A			54.206.68.72
-docker1					A			54.206.57.54
+ns1						A			NS1ADDR
+cfgmgr					CNAME		ns1.proserveau.local.
+docker0					A			D0ADDR
+docker1					A			D1ADDR
 swarm					CNAME		docker1.proserveau.local.
-docker2					A			54.206.65.63
+docker2					A			D2ADDR
