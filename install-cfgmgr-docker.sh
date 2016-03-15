@@ -8,8 +8,18 @@ pip install docker-py
 # Stop Docker Service
 service docker stop
 
-echo "export DOCKER_OPTS=\"--tls=true --tlscacert=/etc/docker/tls/ca.pem --tlscert=/etc/docker/tls/$HOSTNAME.proserveau.local-cert.pem --tlskey=/etc/docker/tls/$HOSTNAME.proserveau.local-key.pem -H=tcp://0.0.0.0:2376 -H=unix:///var/run/docker.sock --insecure-registry=jenkins.proserveau.local:5000\"" | tee -a /etc/default/docker
+echo "export DOCKER_CERT_PATH=\$HOME/.docker" | tee -a /etc/profile.d/docker
+echo "export DOCKER_HOST=tcp://$HOSTNAME.proserveau.local:2376" | tee -a /etc/profile.d/docker
+echo "export DOCKER_TLS_VERIFY=1" | tee -a /etc/profile.d/docker
 
+echo "export DOCKER_OPTS=\"--tls=true --tlscacert=/etc/docker/tls/ca.pem --tlscert=/etc/docker/tls/$HOSTNAME.proserveau.local-cert.pem --tlskey=/etc/docker/tls/$HOSTNAME.proserveau.local-key.pem -H=tcp://0.0.0.0:2376 -H=unix:///var/run/docker.sock --insecure-registry=cfgmgr.proserveau.local:5000\"" | tee -a /etc/default/docker
+
+if [ ! -d ~/.docker ]; then
+	mkdir -p ~/.docker
+fi
+cp ~/ca*pem ~/.docker
+
+# Start Docker Service
 service docker start
 
 # Install Docker Registry
