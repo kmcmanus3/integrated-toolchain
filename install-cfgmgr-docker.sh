@@ -17,7 +17,8 @@ echo "export DOCKER_OPTS=\"--tls=true --tlscacert=/etc/docker/tls/ca.pem --tlsce
 if [ ! -d ~/.docker ]; then
 	mkdir -p ~/.docker
 fi
-cp ~/ca*pem ~/.docker
+cp /etc/docker/tls/ca*pem ~/.docker
+cp /etc/docker/tls/client*pem ~/.docker
 
 # Start Docker Service
 service docker start

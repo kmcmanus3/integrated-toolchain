@@ -1,5 +1,16 @@
 #!/bin/bash
 
+function usage () {
+	echo "Usage: $0 --publicip <Jenkins Public IP>"
+	exit 1
+}
+
+if [ $# -eq 2 ] && [ $1 == "--publicip"]; then
+	PUBLICIP="$2"
+else
+	usage
+fi
+
 TLSHOME="/etc/docker/tls"
 BITS=2048
 
@@ -7,7 +18,9 @@ echo " => Ensuring config directory exists..."
 if [ ! -d $TLSHOME ]; then
 	mkdir -p $TLSHOME
 fi
+
 cd $TLSHOME
+
 echo " => Verifying ca.srl"
 if [ ! -f "ca.srl" ]; then
 	echo " => Creating ca.srl"
@@ -39,6 +52,14 @@ if [ -f ca.pem ] && [ -f ca-key.pem ]; then
 	echo " => Signing client CSR with CA"
 	openssl x509 -req -days 3650 -in client.csr -CA ca.pem -CAkey ca-key.pem -out client-cert.pem -extfile extfile.cnf
 
+	# Create the PUBLICIP certificate
+	echo " => Generating server key for docker0.proserveau.local."
+	openssl genrsa -out $PUBLICIP-key.pem $BITS
+	echo " => Generating server CSR"
+	openssl req -subj "/CN=$PUBLICIP" -new -key $PUBLICIP-key.pem -out $PUBLICIP.csr
+	echo " => Signing server CSR with CA"
+	openssl x509 -req -days 3650 -in $PUBLICIP.csr -CA ca.pem -CAkey ca-key.pem -out $PUBLICIP-cert.pem
+	
 	# Create the Docker Swarn certificate
 	echo " => Generating swarm key"
 	openssl genrsa -out swarm-key.pem $BITS
@@ -72,9 +93,9 @@ if [ -f ca.pem ] && [ -f ca-key.pem ]; then
 	openssl x509 -req -days 3650 -in docker2.proserveau.local.csr -CA ca.pem -CAkey ca-key.pem -out docker2.proserveau.local-cert.pem
 	
 	# Copy certificates to the Docker hosts
-	scp -i ~/.ssh/devops.key ca*.pem docker0*pem ubuntu@docker0.proserveau.local:~/
-	scp -i ~/.ssh/devops.key ca*.pem docker1*pem swarm*pem ubuntu@docker0.proserveau.local:~/
-	scp -i ~/.ssh/devops.key ca*.pem docker2*pem ubuntu@docker0.proserveau.local:~/
+	scp -i ~/.ssh/docker.pem ca*.pem docker0*pem ubuntu@docker0.proserveau.local:~/
+	scp -i ~/.ssh/docker.pem ca*.pem docker1*pem swarm*pem ubuntu@docker0.proserveau.local:~/
+	scp -i ~/.ssh/docker.pem ca*.pem docker2*pem ubuntu@docker0.proserveau.local:~/
 
 fi
 

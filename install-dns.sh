@@ -5,15 +5,10 @@ function usage() {
 	exit 1
 }
 
-NS1RECORD=""
 NS1ADDR=""
-FWDRECORD=""
 FWDADDR=""
-D0RECORD=""
 D0ADDR=""
-D1RECORD=""
 D1ADDR=""
-D2RECORD=""
 D2ADDR=""
 
 if [ "$#" -eq 10 ]; then
@@ -31,30 +26,24 @@ if [ "$#" -eq 10 ]; then
 	
 	while [ $# -gt 0 ]; do
 		key="$1"
-		RECORD=""
 		case $key in
 			--dns)
-				NS1RECORD="NS1ADDR"
 				NS1ADDR="$2"
 				shift
 				;;
 			--forwarder)
-				FWDRECORD="FWDADDR"
 				FWDADDR="$2"
 				shift
 				;;
 			--docker0)
-				D0RECORD="D0ADDR"
 				D0ADDR="$2"
 				shift
 				;;
 			--docker1)
-				D1RECORD="D1ADDR"
-				D1ADDR="$1"
+				D1ADDR="$2"
 				shift		
 				;;
 			--docker2)
-				D2RECORD="D2ADDR"
 				D2ADDR="$2"
 				shift
 				;;
@@ -64,22 +53,22 @@ if [ "$#" -eq 10 ]; then
 		shift
 	done
 
-	if [ $NS1RECORD != "" ] && [ $NS1ADDR != "" ] && [ $FWDRECORD != "" ] && [ $FWDADDR != "" ] && [ $D0RECORD != "" ] && [ $D0ADDR != "" ] && [ $D1RECORD != "" ] && [ $D1ADDR != "" ] && [ $D2RECORD != "" ] && [ $D2ADDR != "" ]; then
-		sed -i -e "s/$NS1RECORD/$NS1ADDR/" /etc/bind/proserveau.local
-		sed -i -e "s/$NS1RECORD/$NS1ADDR/" /etc/bind/named.conf.options
-		sed -i -e "s/$FWDRECORD/$FWDADDR/" /etc/bind/named.conf.options
-		sed -i -e "s/$D0RECORD/$D0ADDR/" /etc/bind/proserveau.local
-		sed -i -e "s/$D0RECORD/$D0ADDR/" /etc/bind/named.conf.options
-		sed -i -e "s/$D1RECORD/$D1ADDR/" /etc/bind/proserveau.local
-		sed -i -e "s/$D1RECORD/$D1ADDR/" /etc/bind/named.conf.options
-		sed -i -e "s/$D2RECORD/$D2ADDR/" /etc/bind/proserveau.local
-		sed -i -e "s/$D2RECORD/$D2ADDR/" /etc/bind/named.conf.options
+	if  [ $NS1ADDR != "" ] && [ $FWDADDR != "" ] && [ $D0ADDR != "" ] && [ $D1ADDR != "" ] && [ $D2ADDR != "" ]; then
+		sed -i -e "s/NS1ADDR/$NS1ADDR/" /etc/bind/proserveau.local.db
+		sed -i -e "s/NS1ADDR/$NS1ADDR/" /etc/bind/named.conf.options
+		sed -i -e "s/FWDADDR/$FWDADDR/" /etc/bind/named.conf.options
+		sed -i -e "s/D0ADDR/$D0ADDR/" /etc/bind/proserveau.local.db
+		sed -i -e "s/D0ADDR/$D0ADDR/" /etc/bind/named.conf.options
+		sed -i -e "s/D1ADDR/$D1ADDR/" /etc/bind/proserveau.local.db
+		sed -i -e "s/D1ADDR/$D1ADDR/" /etc/bind/named.conf.options
+		sed -i -e "s/D2ADDR/$D2ADDR/" /etc/bind/proserveau.local.db
+		sed -i -e "s/D2ADDR/$D2ADDR/" /etc/bind/named.conf.options
 	else
 		usage
 	fi
 
 	# Start BIND9 Service
-	service bind start
+	service bind9 start
 
 else
 	usage
