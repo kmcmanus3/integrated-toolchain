@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# COPYRIGHT (C) 2016 CSC, INC.  ALL RIGHTS RESERVED.  CONFIDENTIAL
+# AND PROPRIETARY.
+
+# ALL SOFTWARE, INFORMATION AND ANY OTHER RELATED COMMUNICATIONS (COLLECTIVELY,
+# "WORKS") ARE CONFIDENTIAL AND PROPRIETARY INFORMATION THAT ARE THE EXCLUSIVE
+# PROPERTY OF CSC.  ALL WORKS ARE PROVIDED UNDER THE APPLICABLE
+# AGREEMENT OR END USER LICENSE AGREEMENT IN EFFECT BETWEEN YOU AND
+# CSC.  UNLESS OTHERWISE SPECIFIED IN THE APPLICABLE AGREEMENT, ALL
+# WORKS ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND EITHER EXPRESSED OR
+# IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.  ALL USE, DISCLOSURE
+# AND/OR REPRODUCTION OF WORKS NOT EXPRESSLY AUTHORIZED BY CSC IS
+# STRICTLY PROHIBITED.
+
 function usage () {
 	echo "Usage: $0 --publicip <Jenkins Public IP>"
 	exit 1
@@ -53,7 +67,7 @@ if [ -f ca.pem ] && [ -f ca-key.pem ]; then
 	openssl x509 -req -days 3650 -in client.csr -CA ca.pem -CAkey ca-key.pem -out client-cert.pem -extfile extfile.cnf
 
 	# Create the PUBLICIP certificate
-	echo " => Generating server key for docker0.proserveau.local."
+	echo " => Generating server key for Jenkins on the public IP."
 	openssl genrsa -out $PUBLICIP-key.pem $BITS
 	echo " => Generating server CSR"
 	openssl req -subj "/CN=$PUBLICIP" -new -key $PUBLICIP-key.pem -out $PUBLICIP.csr
@@ -61,7 +75,7 @@ if [ -f ca.pem ] && [ -f ca-key.pem ]; then
 	openssl x509 -req -days 3650 -in $PUBLICIP.csr -CA ca.pem -CAkey ca-key.pem -out $PUBLICIP-cert.pem
 	
 	# Create the Docker Swarn certificate
-	echo " => Generating swarm key"
+	echo " => Generating Docker Swarm key"
 	openssl genrsa -out swarm-key.pem $BITS
 	echo " => Genereating swarm CSR"
 	openssl req -subj "/CN=swarm.proserveau.local" -new -key swarm-key.pem -out swarm.csr

@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# COPYRIGHT (C) 2016 CSC, INC.  ALL RIGHTS RESERVED.  CONFIDENTIAL
+# AND PROPRIETARY.
+
+# ALL SOFTWARE, INFORMATION AND ANY OTHER RELATED COMMUNICATIONS (COLLECTIVELY,
+# "WORKS") ARE CONFIDENTIAL AND PROPRIETARY INFORMATION THAT ARE THE EXCLUSIVE
+# PROPERTY OF CSC.  ALL WORKS ARE PROVIDED UNDER THE APPLICABLE
+# AGREEMENT OR END USER LICENSE AGREEMENT IN EFFECT BETWEEN YOU AND
+# CSC.  UNLESS OTHERWISE SPECIFIED IN THE APPLICABLE AGREEMENT, ALL
+# WORKS ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND EITHER EXPRESSED OR
+# IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.  ALL USE, DISCLOSURE
+# AND/OR REPRODUCTION OF WORKS NOT EXPRESSLY AUTHORIZED BY CSC IS
+# STRICTLY PROHIBITED.
+
 function usage () {
 	echo "Usage: $0 --publicip <Jenkins Public IP> [--password <dockerci password>]"
 	exit 1
@@ -17,7 +31,7 @@ else
 	while [ $# -gt 0 ]; do
 		key="$1"
 		case $key in
-			--public)
+			--publicip)
 				PUBLICIP="$2"
 				shift
 				;;
@@ -41,6 +55,7 @@ else
 	groupadd dockerci
 	useradd -p $( echo "$PASSWD" | openssl passwd -1 -salt s%-1d@ -stdin ) -g dockerci dockerci
 
+	# Configure Jenkins
 	service jenkins stop
 
 	# Copy certifcate files
@@ -62,10 +77,17 @@ else
 	sed -i -e "s/JENKINS_ARGS=/#JENKINS_ARGS=/"
 	echo "JENKINS_ARGS=\"--httpPort=-1 --httpsPort=8443 --httpsCertificate=/var/lib/jenkins/.ssh/$PUBLICIP-cert.pem --httpsPrivateKey=/var/lib/jenkins/.ssh/$PUBLICIP-key.pem\"" | tee -a /etc/default/jenkins
 	
-	# Set RBAC for DOCKERCI
+	# The following are items that still need to be configured on Jnekins, but have not yet been automated.
 	
-	# Add GitHub credentials to Jenkins
+	# To do: Add DOCKERCI user and configure RBAC for DOCKERCI
 	
-	# Set up DockerTest project and job
+	# To do: Take Jenkins out of anonymous mode
 	
+	# To do: Add GitHub credentials to Jenkins
+	
+	# To do: Load Jenkins Plugins (NodeJS, Docker, Ansible?)
+
+	# To do: Set up NodeTest project and job
+	
+	service jenkins start
 fi
