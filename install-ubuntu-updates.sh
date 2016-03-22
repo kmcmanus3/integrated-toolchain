@@ -14,5 +14,9 @@
 # AND/OR REPRODUCTION OF WORKS NOT EXPRESSLY AUTHORIZED BY CSC IS
 # STRICTLY PROHIBITED.
 
+echo " => Updating Ubuntu"
 sudo apt-get -y update
 sudo apt-get -y install linux-image-generic-lts-trusty
+
+echo " => Script $0 complete."
+exit 0

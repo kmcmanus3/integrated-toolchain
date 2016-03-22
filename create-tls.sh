@@ -19,7 +19,7 @@ function usage () {
 	exit 1
 }
 
-if [ $# -eq 2 ] && [ $1 == "--publicip"]; then
+if [ $# -eq 2 ] && [ $1 == "--publicip" ]; then
 	PUBLICIP="$2"
 else
 	usage
@@ -85,6 +85,13 @@ if [ -f ca.pem ] && [ -f ca-key.pem ]; then
 	openssl x509 -req -days 3650 -in swarm.csr -CA ca.pem -CAkey ca-key.pem -out swarm-cert.pem -extfile extfile.cnf
 
 	# Create the Docker Engine certificates
+	echo " => Generating server key for cfgmgr.proserveau.local."
+	openssl genrsa -out cfgmgr.proserveau.local-key.pem $BITS
+	echo " => Generating server CSR"
+	openssl req -subj "/CN=cfgmgr.proserveau.local" -new -key cfgmgr.proserveau.local-key.pem -out cfgmgr.proserveau.local.csr
+	echo " => Signing server CSR with CA"
+	openssl x509 -req -days 3650 -in cfgmgr.proserveau.local.csr -CA ca.pem -CAkey ca-key.pem -out cfgmgr.proserveau.local-cert.pem
+
 	echo " => Generating server key for docker0.proserveau.local."
 	openssl genrsa -out docker0.proserveau.local-key.pem $BITS
 	echo " => Generating server CSR"
@@ -113,4 +120,5 @@ if [ -f ca.pem ] && [ -f ca-key.pem ]; then
 
 fi
 
+echo " => Script $0 complete."
 exit 0

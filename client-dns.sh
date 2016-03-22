@@ -42,6 +42,7 @@ if [ "$#" -eq 4 ]; then
 	done
 	
 	if [ $DNSSERVER != "" ] && [ $DOMAINNAME != "" ]; then
+		echo "=> Configuring DNS Resolution"
 		echo "nameserver $DNSSERVER" | sudo tee /etc/resolv.conf
 		echo "domain $DOMAINNAME" | sudo tee -a /etc/resolv.conf
 		echo "search $DOMAINNAME" | sudo tee -a /etc/resolv.conf
@@ -53,4 +54,5 @@ else
 	usage
 fi
 
+echo "Script $0 complete."
 exit 0

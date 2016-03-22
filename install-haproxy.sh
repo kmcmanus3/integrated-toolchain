@@ -14,8 +14,13 @@
 # AND/OR REPRODUCTION OF WORKS NOT EXPRESSLY AUTHORIZED BY CSC IS
 # STRICTLY PROHIBITED.
 
+echo " => Installing HAProxy"
 apt-get install haproxy
 
+echo " => Configuring HAProxy"
 service stop haproxy
 cp ./haproxy.cfg /etc/haproxy
 service start haproxy
+
+exit 0
+echo " => Script $0 complete."

@@ -28,12 +28,14 @@ D2ADDR=""
 if [ "$#" -eq 10 ]; then
 
 	# Install BIND9
+	echo " => Installing BIND"
 	apt-get -y install bind9
 
 	# Stop BIND9 Service
 	service bind9 stop
 
 	# Adjust BIND configuration, add proserveau.local zone and records.
+	echo " => Copying configuration files"
 	cp named.conf.options /etc/bind/named.conf.options
 	cp named.conf.local /etc/bind/named.conf.local
 	cp proserveau.local.db /etc/bind/proserveau.local.db
@@ -67,6 +69,7 @@ if [ "$#" -eq 10 ]; then
 		shift
 	done
 
+	echo " => Customising BIND configuration"
 	if  [ $NS1ADDR != "" ] && [ $FWDADDR != "" ] && [ $D0ADDR != "" ] && [ $D1ADDR != "" ] && [ $D2ADDR != "" ]; then
 		sed -i -e "s/NS1ADDR/$NS1ADDR/" /etc/bind/proserveau.local.db
 		sed -i -e "s/NS1ADDR/$NS1ADDR/" /etc/bind/named.conf.options
@@ -89,4 +92,5 @@ else
 
 fi
 
+echo " => Script $0 complete."
 exit 0
