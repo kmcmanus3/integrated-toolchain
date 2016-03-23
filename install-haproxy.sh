@@ -18,9 +18,9 @@ echo " => Installing HAProxy"
 apt-get install haproxy
 
 echo " => Configuring HAProxy"
-service stop haproxy
+service haproxy stop
 cp ./haproxy.cfg /etc/haproxy
-service start haproxy
+service haproxy start
 
 exit 0
 echo " => Script $0 complete."

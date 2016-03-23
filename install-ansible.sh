@@ -30,12 +30,12 @@ apt-get -y ansible
 # Copy Ansible patched files
 echo " => Patching Ansible for Docker and Etcd"
 cp ./etcd.py /usr/share/pyshared/ansible/runner/lookup_plugins/
-cp ./docker.py /usr/shared/pyshared/ansible/modules/core/cloud/
+cp ./docker.py /usr/shared/pyshared/ansible/modules/core/cloud/docker/
 
 # Populate /etc/ansible file structure
 echo " => Unpacking the Ansible configuration files"
 cp ./ansible.tar.gz /etc/ansible
-cd /etc/anisble
+cd /etc/ansible
 tar -zxvf ansible.tar.gz
 
 if [ $# -eq 2 ] && [ $1 == "--loadbalance" ]; then 
