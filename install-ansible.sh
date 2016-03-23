@@ -25,7 +25,7 @@ echo " => Installing Ansible 1.9"
 apt-get -y install software-properties-common
 apt-add-repository -y ppa:ansible/ansible-1.9
 apt-get -y update
-apt-get -y ansible
+apt-get -y install ansible
 
 # Copy Ansible patched files
 echo " => Patching Ansible for Docker and Etcd"
