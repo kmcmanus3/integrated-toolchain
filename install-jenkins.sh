@@ -66,8 +66,8 @@ else
 	echo " => Placing certificate files"
 	if [ ! -d $JENKINSHOME/.ssh ]; then
 		mkdir -p $JENKINSHOME/.ssh
-		chown -R jenkins:jenkins $JENKINSHOME/.ssh
-		chmod -R 600 $JENKINSHOME/.ssh
+		chown jenkins:jenkins $JENKINSHOME/.ssh
+		chmod 755 $JENKINSHOME/.ssh
 	fi
 	cp /etc/docker/tls/$PUBLICIP*pem $JENKINSHOME/.ssh
 	
@@ -77,6 +77,8 @@ else
 	else
 		echo "Could not find ~/.ssh/docker.pem file - please copy this file to $JENKINSHOME/.ssh/"
 	fi
+	chown -R jenkins:jenkins $JENKINSHOME/.ssh
+	chmod -R 644 $JENKINSHOME/.ssh/*
 	
 	# Set Jenkins arguments for ports and certificates
 	echo " => Reconfigure Jenkins daemon startup parameters"
