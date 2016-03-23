@@ -80,7 +80,7 @@ else
 	
 	# Set Jenkins arguments for ports and certificates
 	echo " => Reconfigure Jenkins daemon startup parameters"
-	sed -i -e "s/JENKINS_ARGS=/#JENKINS_ARGS=/"
+	sed -i -e "s/JENKINS_ARGS=/#JENKINS_ARGS=/" /etc/default/jenkins
 	echo "JENKINS_ARGS=\"--httpPort=-1 --httpsPort=8443 --httpsCertificate=$JENKINSHOME/.ssh/$PUBLICIP-cert.pem --httpsPrivateKey=$JENKINSHOME/.ssh/$PUBLICIP-key.pem\"" | tee -a /etc/default/jenkins
 	
 	# Add dockerci user
@@ -112,11 +112,11 @@ else
 
 	# Load Jenkins Plugins (NodeJS, Docker, Ansible?)
 	echo " => Install Jenkins Plugins: nodejs, git, git-client, github, github-api, docker-commons, docker-build-step"
-	java -jar $JENKINSHOME/war/WEB-INF/jenkin-cli.jar -s https://127.0.0.1:8443/ -noCertificateCheck install-plugin nodejs git git-client github github-api docker-commons docker-build-step -deploy --username dockerci --password $PASSWD
+	java -jar $JENKINSHOME/war/WEB-INF/jenkins-cli.jar -s https://127.0.0.1:8443/ -noCertificateCheck install-plugin nodejs git git-client github github-api docker-commons docker-build-step -deploy --username dockerci --password $PASSWD
 
 	# Set up NodeTest project and job
 	echo " => Create the Node-Test job"
-	java -jar $JENKINSHOME/war/WEB-INF/jenkin-cli.jar -s https://127.0.0.1:8443/ -noCertificateCheck create-job Node-Test --username dockerci --password $PASSWD < jenkins-job-config.xml
+	java -jar $JENKINSHOME/war/WEB-INF/jenkins-cli.jar -s https://127.0.0.1:8443/ -noCertificateCheck create-job Node-Test --username dockerci --password $PASSWD < jenkins-job-config.xml
 		
 fi
 
