@@ -85,6 +85,10 @@ else
 	sed -i -e "s/JENKINS_ARGS=/#JENKINS_ARGS=/" /etc/default/jenkins
 	echo "JENKINS_ARGS=\"--httpPort=-1 --httpsPort=8443 --httpsCertificate=$JENKINSHOME/.ssh/$PUBLICIP-cert.pem --httpsPrivateKey=$JENKINSHOME/.ssh/$PUBLICIP-key.pem\"" | tee -a /etc/default/jenkins
 	
+	# Add jenkins user to group shadow to allow Unix usergroup database PAM
+	echo " => Add jenkins user to group shadow for PAM"
+	usermod -G shadow -a jenkins
+	
 	# Add dockerci user
 	echo " => Add dockerci user to Jenkins"
 	if [ ! -d $JENKINSHOME/users/dockerci ]; then
