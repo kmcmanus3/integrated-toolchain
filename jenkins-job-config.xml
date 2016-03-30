@@ -42,22 +42,22 @@ npm test
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
       <command>#!/bin/bash
-export DOCKER_HOST=&quot;tcp://jenkins.proserveau.local:2376&quot;
+export DOCKER_HOST=&quot;tcp://cfgmgr.proserveau.local:2376&quot;
 BRANCH=$(echo ${GIT_BRANCH} | awk -F/ &apos;{print $2}&apos;)
 echo $BRANCH
 if [ &quot;$BRANCH&quot;==&quot;develop&quot; ]; then
-   docker build -t node-test .
+   docker --tls=true build -t node-test .
 fi</command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
       <command>#!/bin/bash
-export DOCKER_HOST=&quot;tcp://jenkins.proserveau.local:2376&quot;
+export DOCKER_HOST=&quot;tcp://cfgmgr.proserveau.local:2376&quot;
 BRANCH=$(echo ${GIT_BRANCH} | awk -F/ &apos;{print $2}&apos;)
 echo $BRANCH
 if [ &quot;$BRANCH&quot;==&quot;develop&quot; ]; then
-    docker tag -f node-test jenkins.proserveau.local:5000/node-test:1.0.$BUILD_NUMBER
-    docker tag -f node-test jenkins.proserveau.local:5000/node-test
-    docker push jenkins.proserveau.local:5000/node-test
+    docker --tls=true tag -f node-test cfgmgr.proserveau.local:5000/node-test:1.0.$BUILD_NUMBER
+    docker --tls=true tag -f node-test cfgmgr.proserveau.local:5000/node-test
+    docker --tls=true push cfgmgr.proserveau.local:5000/node-test
 fi</command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>

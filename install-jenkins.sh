@@ -41,7 +41,7 @@ else
 				shift
 				;;
 			*)
-			;;
+				;;
 		esac
 		shift
 	done
@@ -51,7 +51,7 @@ else
 	wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
 	sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
 	apt-get -y update
-	apt-get -y install jenkins ant maven pwauth
+	apt-get -y install npm jenkins ant maven pwauth
 
 	# Create DOCKERCI user
 	echo " => Create dockerci user"
@@ -78,7 +78,17 @@ else
 		echo "Could not find ~/.ssh/docker.pem file - please copy this file to $JENKINSHOME/.ssh/"
 	fi
 	chown -R jenkins:jenkins $JENKINSHOME/.ssh
-	chmod -R 644 $JENKINSHOME/.ssh/*
+	chmod -R 600 $JENKINSHOME/.ssh/*
+	
+	# Copy Docker client certificate
+	if [ ! -d $JENKINSHOME/.docker ]; then
+		mkdir -p $JENKINSHOME/.docker
+		chown jenkins:jenkins $JENKINSHOME/.docker
+		chmod 755 $JENKINSHOME/.docker
+	fi
+	cp /etc/docker/tls/ca*pem $JENKINSHOME/.docker
+	cp /etc/docker/tls/client*pem $JENKINSHOME/.docker
+	chmod -R 640 $JENKINSHOME/.docker/*
 	
 	# Set Jenkins arguments for ports and certificates
 	echo " => Reconfigure Jenkins daemon startup parameters"

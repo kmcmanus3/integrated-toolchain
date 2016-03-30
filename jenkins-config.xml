@@ -43,7 +43,7 @@
   <securityRealm class="hudson.security.PAMSecurityRealm" plugin="pam-auth@1.2">
     <serviceName>sshd</serviceName>
   </securityRealm>
-  <disableRememberMe>true</disableRememberMe>
+  <disableRememberMe>false</disableRememberMe>
   <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
   <workspaceDir>${ITEM_ROOTDIR}/workspace</workspaceDir>
   <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
