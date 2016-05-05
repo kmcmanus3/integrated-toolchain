@@ -50,7 +50,7 @@ service docker start
 # Launch Registrator Service (docker0 does not need Registrator)
 echo " => Installing Registrator"
 if [ $HOSTNAME != "docker0" ]; then 
-	docker --tls=true -H tcp://$HOSTNAME.proserveau.local:2376 pull gliderlabs:registrator
+	docker --tls=true -H tcp://$HOSTNAME.proserveau.local:2376 pull gliderlabs/registrator
 	docker --tls=true -H tcp://$HOSTNAME.proserveau.local:2376 run -d --name=registrator --net=host --volume=/var/run/docker.sock:/tmp/docker.sock gliderlabs/registrator:latest etcd://cfgmgr.proserveau.local:4001/services
 fi
 
