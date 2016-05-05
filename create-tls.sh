@@ -115,8 +115,8 @@ if [ -f ca.pem ] && [ -f ca-key.pem ]; then
 	
 	# Copy certificates to the Docker hosts
 	scp -i ~/.ssh/docker.pem ca*.pem docker0*pem ubuntu@docker0.proserveau.local:~/
-	scp -i ~/.ssh/docker.pem ca*.pem docker1*pem swarm*pem ubuntu@docker0.proserveau.local:~/
-	scp -i ~/.ssh/docker.pem ca*.pem docker2*pem ubuntu@docker0.proserveau.local:~/
+	scp -i ~/.ssh/docker.pem ca*.pem docker1*pem swarm*pem ubuntu@docker1.proserveau.local:~/
+	scp -i ~/.ssh/docker.pem ca*.pem docker2*pem ubuntu@docker2.proserveau.local:~/
 
 fi
 
