@@ -15,54 +15,68 @@
 # STRICTLY PROHIBITED.
 
 function usage () {
-	echo "Usage: $0 [--loadbalance AWSELB | HAPROXY]"
+	echo "Usage: $0 --sshuser <SSH User Account> [--loadbalance <aws | haproxy>] [--ec2region <AWS EC2 Region>] [--awsaccesskey <AWS Access Key>] [--awssecretkey <AWS Secret Key>]"
 	exit 1
 }
 
+if [ $# -gt 1 ]; then
 
-# Update repositories to get the right version of Ansible (1.9)
-echo " => Installing Ansible 1.9"
-apt-get -y install software-properties-common
-apt-add-repository -y ppa:ansible/ansible-1.9
-apt-get -y update
-apt-get -y install ansible
+	# Update repositories to get the right version of Ansible (1.9)
+	echo " => Installing Ansible 1.9"
+	apt-get -y install software-properties-common
+	apt-add-repository -y ppa:ansible/ansible-1.9
+	apt-get -y update
+	apt-get -y install ansible
 
-# Copy Ansible patched files
-echo " => Patching Ansible for Docker and Etcd"
-cp ./etcd.py /usr/share/pyshared/ansible/runner/lookup_plugins/
-cp ./docker.py /usr/share/pyshared/ansible/modules/core/cloud/docker/
+	# Copy Ansible patched files
+	echo " => Patching Ansible for Docker and Etcd"
+	cp ./etcd.py /usr/share/pyshared/ansible/runner/lookup_plugins/
+	cp ./docker.py /usr/share/pyshared/ansible/modules/core/cloud/docker/
 
-# Populate /etc/ansible file structure
-echo " => Unpacking the Ansible configuration files"
-cp ./ansible.tar.gz /etc/ansible/
-cd /etc/ansible
-tar -zxvf ansible.tar.gz
+	# Populate /etc/ansible file structure
+	echo " => Unpacking the Ansible configuration files"
+	cp ./ansible.tar.gz /etc/ansible/
+	cd /etc/ansible
+	tar -zxvf ansible.tar.gz
+	rm -f ansible.tar.gz
 
-if [ $# -eq 2 ] && [ $1 == "--loadbalance" ]; then 
-
-	# Process args and set configuration files
-	key="$2"
-	case $key in
-		AWSELB)
-			echo " => Setting AWS ELB Ansible Playbooks" 
-			cp /etc/ansible/docker-canary.yml.aws /etc/ansible/docker-canary.yml
-			cp /etc/ansible/docker-prod.yml.aws /etc/ansible/docker-prod.yml
-			echo " => Edit the files docker-prod.yml and docker-canary.yml in /etc/ansible/ to set the AWS Access and Secret Keys, the AWS Region, and the ELB Name"
-			;;
-		HAPROXY)
-			echo " => Setting HAProxy Ansible Playbooks"
-			cp /etc/ansible/docker-canary.yml.haproxy /etc/ansible/docker-canary.yml
-			cp /etc/ansible/docker-prod.yml.haproxy /etc/ansible/docker-prod.yml
-			;;
-		*)
-			usage
-			;;
-	esac
-
+	while [ $# -gt 0 ]; do
+		key=$1
+		case $key in
+			--sshuser)
+				sed -i -e "s/SSHUSER/$2" /etc/ansible/group_vars/all
+				shift
+				;;
+			--loadbalance)
+				cp /etc/ansible/docker-canary.yml.$2 /etc/ansible/docker-canary.yml
+				cp /etc/ansible/docker-prod.yml.$2 /etc/ansible/docker-prod.yml
+				shift
+				;;
+			--ec2region)
+				sed -i -e "s/EC2REGION/$2" /etc/ansible/group_vars/all
+				shift
+				;;
+			--awsaccesskey)
+				sed -i -e "s/AWSACCESSKEY/$2" /etc/ansible/group_vars/all
+				sed -i -e "s/EC2ACCESSKEY/$2" /etc/ansible/group_vars/all
+				shift
+				;;
+			--awssecretkey)
+				sed -i -e "s/AWSSECRETKEY/$2" /etc/ansible/group_vars/all
+				sed -i -e "s/EC2SECRETKEY/$2" /etc/ansible/group_vars/all
+				shift
+				;;
+			*)
+				usage
+				;;
+		esac
+		shift
+	done
+	
 else
 	usage
 
 fi
 
-echo " => Script $0 complete."
+	echo " => Script $0 complete."
 exit 0

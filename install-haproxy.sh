@@ -17,6 +17,9 @@
 echo " => Installing HAProxy"
 apt-get install haproxy
 
+echo " => Enabling HAProxy"
+sed -i -e "s/ENABLED=0/ENABLED=1/" /etc/default/haproxy
+
 echo " => Configuring HAProxy"
 service haproxy stop
 cp ./haproxy.cfg /etc/haproxy
