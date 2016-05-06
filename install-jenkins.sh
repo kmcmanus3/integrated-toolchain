@@ -99,6 +99,10 @@ else
 	echo " => Add jenkins user to group shadow for PAM"
 	usermod -G shadow -a jenkins
 	
+	# Add jenkins user to sudoers
+	echo "=> Add jenkins user to sudoers, so it will not be asked for a password"
+	cp jenkins.sudoers /etc/sudoers.d/jenkins
+	
 	# Add dockerci user
 	echo " => Add dockerci user to Jenkins"
 	if [ ! -d $JENKINSHOME/users/dockerci ]; then
