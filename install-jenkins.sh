@@ -48,10 +48,10 @@ else
 	
 	# Install Jenkins
 	echo " => Install Jenkins"
-	wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
-	sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
+	wget -q -O - https://jenkins-ci.org/debian-stable/jenkins-ci.org.key | sudo apt-key add -
+	sh -c 'echo deb http://pkg.jenkins-ci.org/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 	apt-get -y update
-	apt-get -y install npm jenkins ant maven pwauth
+	apt-get -y install jenkins=1.651.1 npm ant maven pwauth
 
 	# Create DOCKERCI user
 	echo " => Create dockerci user"
